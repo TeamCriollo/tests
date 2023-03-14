@@ -1,0 +1,1509 @@
+{
+  "dependencies": {
+    "http": "http:"
+  },
+  "expressions": {
+    "user": {
+      "description": "User",
+      "type": "url",
+      "searchIn": "https://github.com",
+      "regex": "https://github.com/((?!pulls$|issues$|marketplace$|explore$|notifications$|codespaces$)[^/])+$"
+    },
+    "repo": {
+      "description": "Repo",
+      "type": "url",
+      "searchIn": "https://github.com",
+      "regex": "https://github.com/[^/]+/[^/]+$"
+    },
+    "issue": {
+      "description": "Issue",
+      "type": "url",
+      "searchIn": "https://github.com",
+      "regex": "https://github.com/[^/]+/[^/]+/issues/[0-9]+$"
+    },
+    "pullRequest": {
+      "description": "Pull Request",
+      "type": "url",
+      "searchIn": "https://github.com",
+      "regex": "https://github.com/[^/]+/[^/]+/pull/[0-9]+($|\\?)"
+    },
+    "search": {
+      "description": "Issue/PR Search",
+      "type": "url",
+      "searchIn": "https://github.com",
+      "regex": "https://github.com/[^/]+/[^/]+/(pulls|issues$|issues\\?q=.*$)"
+    },
+    "prCommits": {
+      "description": "PR Commits",
+      "type": "url",
+      "searchIn": "https://github.com",
+      "regex": "https://github.com/[^/]+/[^/]+/pull/[0-9]+/commits$"
+    },
+    "prCommit": {
+      "description": "PR Commit",
+      "type": "url",
+      "searchIn": "https://github.com",
+      "regex": "https://github.com/[^/]+/[^/]+/pull/[0-9]+/commits/[a-f0-9]+$"
+    },
+    "prChanges": {
+      "description": "PR Changes",
+      "type": "url",
+      "searchIn": "https://github.com",
+      "regex": "https://github.com/[^/]+/[^/]+/pull/[0-9]+/files$"
+    },
+    "comment": {
+      "description": "Comment",
+      "type": "url",
+      "searchIn": "https://github.com",
+      "regex": "https://github.com/[^/]+/[^/]+/(pull|issue)/[0-9]+#issue(comment)?-[0-9]+$"
+    }
+  },
+  "schema": {
+    "types": [
+      {
+        "name": "Root",
+        "description": "Driver for the Github API",
+        "fields": [
+          {
+            "name": "users",
+            "type": "UserCollection"
+          },
+          {
+            "name": "status",
+            "type": "String"
+          },
+          {
+            "name": "parse",
+            "type": "List",
+            "hints": {
+              "hidden": false
+            },
+            "ofType": {
+              "type": "Ref",
+              "ofType": "Repository"
+            },
+            "params": [
+              {
+                "name": "name",
+                "type": "String"
+              },
+              {
+                "name": "value",
+                "type": "String"
+              }
+            ]
+          }
+        ],
+        "actions": [
+          {
+            "name": "configure",
+            "description": "Invoke with a valid Github access token to configure this driver",
+            "params": [
+              {
+                "name": "token",
+                "type": "String"
+              }
+            ],
+            "type": "Void"
+          }
+        ],
+        "events": []
+      },
+      {
+        "name": "UserCollection",
+        "fields": [
+          {
+            "name": "one",
+            "type": "User",
+            "params": [
+              {
+                "name": "name",
+                "type": "String"
+              }
+            ]
+          },
+          {
+            "name": "page",
+            "type": "UserPage",
+            "params": [
+              {
+                "name": "since",
+                "type": "String"
+              }
+            ]
+          }
+        ],
+        "actions": [],
+        "events": []
+      },
+      {
+        "name": "UserPage",
+        "fields": [
+          {
+            "name": "items",
+            "type": "List",
+            "ofType": "User"
+          },
+          {
+            "name": "next",
+            "type": "Ref",
+            "ofType": "UserPage"
+          }
+        ],
+        "actions": [],
+        "events": []
+      },
+      {
+        "name": "User",
+        "fields": [
+          {
+            "name": "login",
+            "type": "String",
+            "hints": {
+              "primary": true
+            }
+          },
+          {
+            "name": "name",
+            "type": "String",
+            "hints": {
+              "secondary": true
+            }
+          },
+          {
+            "name": "bio",
+            "type": "String"
+          },
+          {
+            "name": "blog",
+            "type": "String"
+          },
+          {
+            "name": "company",
+            "type": "String"
+          },
+          {
+            "name": "repos",
+            "type": "RepositoryCollection"
+          },
+          {
+            "name": "email",
+            "type": "String"
+          },
+          {
+            "name": "id",
+            "type": "Int"
+          },
+          {
+            "name": "followers",
+            "type": "Int"
+          },
+          {
+            "name": "following",
+            "type": "Int"
+          },
+          {
+            "name": "location",
+            "type": "String"
+          },
+          {
+            "name": "type",
+            "type": "String"
+          },
+          {
+            "name": "avatar_url",
+            "type": "String"
+          },
+          {
+            "name": "created_at",
+            "type": "String"
+          },
+          {
+            "name": "gravatar_id",
+            "type": "String"
+          },
+          {
+            "name": "public_gists",
+            "type": "Int"
+          },
+          {
+            "name": "public_repos",
+            "type": "Int"
+          },
+          {
+            "name": "site_admin",
+            "type": "Boolean"
+          },
+          {
+            "name": "hireable",
+            "type": "Boolean"
+          },
+          {
+            "name": "updated_at",
+            "type": "String"
+          }
+        ],
+        "actions": [],
+        "events": []
+      },
+      {
+        "name": "RepositoryCollection",
+        "fields": [
+          {
+            "name": "one",
+            "type": "Repository",
+            "params": [
+              {
+                "name": "name",
+                "type": "String"
+              }
+            ]
+          },
+          {
+            "name": "page",
+            "type": "RepositoryPage",
+            "params": [
+              {
+                "name": "type",
+                "type": "String"
+              },
+              {
+                "name": "sort",
+                "type": "String"
+              },
+              {
+                "name": "direction",
+                "type": "String"
+              },
+              {
+                "name": "page",
+                "type": "Int"
+              },
+              {
+                "name": "pageSize",
+                "type": "Int"
+              }
+            ]
+          },
+          {
+            "name": "search",
+            "type": "RepositoryPage",
+            "params": [
+              {
+                "name": "q",
+                "type": "String"
+              },
+              {
+                "name": "sort",
+                "type": "String"
+              },
+              {
+                "name": "order",
+                "type": "String"
+              },
+              {
+                "name": "page",
+                "type": "Int"
+              },
+              {
+                "name": "pageSize",
+                "type": "Int"
+              }
+            ]
+          },
+          {
+            "name": "allItems",
+            "type": "List",
+            "ofType": "Repository"
+          }
+        ],
+        "actions": [],
+        "events": []
+      },
+      {
+        "name": "RepositoryPage",
+        "fields": [
+          {
+            "name": "items",
+            "type": "List",
+            "ofType": "Repository"
+          },
+          {
+            "name": "next",
+            "type": "Ref",
+            "ofType": "RepositoryPage"
+          }
+        ],
+        "actions": [],
+        "events": []
+      },
+      {
+        "name": "Repository",
+        "fields": [
+          {
+            "name": "name",
+            "type": "String",
+            "hints": {
+              "primary": true
+            }
+          },
+          {
+            "name": "description",
+            "type": "String",
+            "hints": {
+              "secondary": true
+            }
+          },
+          {
+            "name": "content",
+            "type": "ContentCollection"
+          },
+          {
+            "name": "archived",
+            "type": "Boolean"
+          },
+          {
+            "name": "branches",
+            "type": "BranchCollection"
+          },
+          {
+            "name": "fork",
+            "type": "Boolean"
+          },
+          {
+            "name": "homepage",
+            "type": "String"
+          },
+          {
+            "name": "id",
+            "type": "Int"
+          },
+          {
+            "name": "language",
+            "type": "String"
+          },
+          {
+            "name": "private",
+            "type": "Boolean"
+          },
+          {
+            "name": "size",
+            "type": "Int"
+          },
+          {
+            "name": "url",
+            "type": "String"
+          },
+          {
+            "name": "allow_merge_commit",
+            "type": "Boolean"
+          },
+          {
+            "name": "allow_rebase_merge",
+            "type": "Boolean"
+          },
+          {
+            "name": "allow_squash_merge",
+            "type": "Boolean"
+          },
+          {
+            "name": "created_at",
+            "type": "String"
+          },
+          {
+            "name": "default_branch",
+            "type": "String"
+          },
+          {
+            "name": "forks_count",
+            "type": "Int"
+          },
+          {
+            "name": "full_name",
+            "type": "String"
+          },
+          {
+            "name": "has_downloads",
+            "type": "Boolean"
+          },
+          {
+            "name": "has_issues",
+            "type": "Boolean"
+          },
+          {
+            "name": "has_pages",
+            "type": "Boolean"
+          },
+          {
+            "name": "has_wiki",
+            "type": "Boolean"
+          },
+          {
+            "name": "html_url",
+            "type": "String"
+          },
+          {
+            "name": "issues",
+            "type": "IssueCollection"
+          },
+          {
+            "name": "network_count",
+            "type": "Int"
+          },
+          {
+            "name": "open_issues_count",
+            "type": "Int"
+          },
+          {
+            "name": "pushed_at",
+            "type": "String"
+          },
+          {
+            "name": "stargazers_count",
+            "type": "Int"
+          },
+          {
+            "name": "subscribers_count",
+            "type": "Int"
+          },
+          {
+            "name": "updated_at",
+            "type": "String"
+          },
+          {
+            "name": "watchers_count",
+            "type": "Int"
+          },
+          {
+            "name": "pull_requests",
+            "params": [],
+            "type": "PullRequestCollection"
+          },
+          {
+            "name": "releases",
+            "params": [],
+            "type": "ReleaseCollection"
+          },
+          {
+            "name": "license",
+            "params": [],
+            "type": "License"
+          },
+          {
+            "name": "commits",
+            "type": "CommitCollection"
+          }
+        ],
+        "actions": [
+          {
+            "name": "transfer",
+            "params": [
+              {
+                "name": "new_owner",
+                "type": "String"
+              },
+              {
+                "name": "new_name",
+                "type": "String"
+              }
+            ],
+            "type": "Void"
+          },
+          {
+            "name": "addCollaborator",
+            "params": [
+              {
+                "name": "username",
+                "type": "String"
+              },
+              {
+                "name": "permission",
+                "type": "String",
+                "description": "The permission to grant the collaborator. One of: pull, triage, push, maintain, admin. Default: push"
+              }
+            ],
+            "type": "Void"
+          },
+          {
+            "name": "createTree",
+            "type": "String",
+            "params": [
+              {
+                "name": "base",
+                "type": "String"
+              },
+              {
+                "name": "path",
+                "type": "String"
+              },
+              {
+                "name": "tree",
+                "type": "String"
+              }
+            ]
+          }
+        ],
+        "events": [
+          {
+            "name": "issueOpened",
+            "type": "Ref",
+            "ofType": "Issue"
+          },
+          {
+            "name": "pullRequestOpened",
+            "type": "Ref",
+            "ofType": "PullRequest"
+          },
+          {
+            "name": "releasePublished",
+            "type": "Ref",
+            "ofType": "Release"
+          }
+        ]
+      },
+      {
+        "name": "BranchCollection",
+        "fields": [
+          {
+            "name": "one",
+            "type": "Branch",
+            "params": [
+              {
+                "name": "name",
+                "type": "String"
+              }
+            ]
+          },
+          {
+            "name": "page",
+            "type": "BranchPage",
+            "params": [
+              {
+                "name": "page",
+                "type": "Int"
+              },
+              {
+                "name": "pageSize",
+                "type": "Int"
+              }
+            ]
+          }
+        ],
+        "actions": [],
+        "events": []
+      },
+      {
+        "name": "BranchPage",
+        "fields": [
+          {
+            "name": "items",
+            "type": "List",
+            "ofType": "Branch"
+          },
+          {
+            "name": "next",
+            "type": "Ref",
+            "ofType": "BranchPage"
+          }
+        ],
+        "actions": [],
+        "events": []
+      },
+      {
+        "name": "Branch",
+        "fields": [
+          {
+            "name": "name",
+            "type": "String"
+          },
+          {
+            "name": "commit",
+            "type": "Commit"
+          },
+          {
+            "name": "protected",
+            "type": "Boolean"
+          }
+        ],
+        "actions": [
+          {
+            "name": "update",
+            "type": "Void",
+            "params": [
+              {
+                "name": "sha",
+                "type": "String"
+              },
+              {
+                "name": "ref",
+                "type": "String"
+              }
+            ]
+          }
+        ],
+        "events": []
+      },
+      {
+        "name": "CommitCollection",
+        "fields": [
+          {
+            "name": "one",
+            "type": "Commit",
+            "params": [
+              {
+                "name": "ref",
+                "type": "String"
+              }
+            ]
+          },
+          {
+            "name": "page",
+            "type": "CommitPage",
+            "params": [
+              {
+                "name": "page",
+                "type": "Int"
+              },
+              {
+                "name": "pageSize",
+                "type": "Int"
+              }
+            ]
+          }
+        ],
+        "actions": [
+          {
+            "name": "create",
+            "type": "String",
+            "params": [
+              {
+                "name": "message",
+                "type": "String"
+              },
+              {
+                "name": "tree",
+                "type": "String"
+              },
+              {
+                "name": "parents",
+                "type": "String"
+              }
+            ]
+          }
+        ],
+        "events": []
+      },
+      {
+        "name": "CommitPage",
+        "fields": [
+          {
+            "name": "items",
+            "type": "List",
+            "ofType": "Commit"
+          },
+          {
+            "name": "next",
+            "type": "Ref",
+            "ofType": "CommitPage"
+          }
+        ],
+        "actions": [],
+        "events": []
+      },
+      {
+        "name": "Commit",
+        "fields": [
+          {
+            "name": "sha",
+            "type": "String"
+          },
+          {
+            "name": "message",
+            "type": "String"
+          },
+          {
+            "name": "author",
+            "type": "User"
+          }
+        ]
+      },
+      {
+        "name": "ContentCollection",
+        "fields": [
+          {
+            "name": "file",
+            "type": "Content",
+            "params": [
+              {
+                "name": "path",
+                "type": "String"
+              }
+            ]
+          },
+          {
+            "name": "dir",
+            "type": "List",
+            "ofType": "Content",
+            "params": [
+              {
+                "name": "path",
+                "type": "String"
+              }
+            ]
+          }
+        ],
+        "actions": [],
+        "events": []
+      },
+      {
+        "name": "Content",
+        "description": "A file, directory, symlink or submodule",
+        "fields": [
+          {
+            "name": "type",
+            "type": "String",
+            "hints": {
+              "primary": true
+            }
+          },
+          {
+            "name": "name",
+            "type": "String",
+            "hints": {
+              "primary": true
+            }
+          },
+          {
+            "name": "encoding",
+            "type": "String"
+          },
+          {
+            "name": "content",
+            "type": "String"
+          },
+          {
+            "name": "path",
+            "type": "String"
+          },
+          {
+            "name": "sha",
+            "type": "String"
+          },
+          {
+            "name": "size",
+            "type": "Int"
+          },
+          {
+            "name": "submodule_git_url",
+            "type": "String"
+          },
+          {
+            "name": "html_url",
+            "type": "String"
+          },
+          {
+            "name": "download_url",
+            "type": "String"
+          }
+        ]
+      },
+      {
+        "name": "IssueCollection",
+        "fields": [
+          {
+            "name": "one",
+            "type": "Issue",
+            "params": [
+              {
+                "name": "number",
+                "type": "Int"
+              }
+            ]
+          },
+          {
+            "name": "search",
+            "type": "IssueSearchPage",
+            "params": [
+              {
+                "name": "page",
+                "type": "Int"
+              },
+              {
+                "name": "pageSize",
+                "type": "Int"
+              },
+              {
+                "name": "q",
+                "type": "String",
+                "description": "Github API returns pull requests in the issues endpoint. Use this to include/exclude them. Can be either issue or pr"
+              },
+              {
+                "name": "sort",
+                "type": "String",
+                "description": "What to sort results by. Can be created, updated, comments."
+              },
+              {
+                "name": "order",
+                "type": "String",
+                "description": "One of asc (ascending) or desc (descending)."
+              }
+            ]
+          },
+          {
+            "name": "page",
+            "type": "IssuePage",
+            "params": [
+              {
+                "name": "page",
+                "type": "Int"
+              },
+              {
+                "name": "pageSize",
+                "type": "Int"
+              },
+              {
+                "name": "kind",
+                "type": "String",
+                "description": "Github API returns pull requests in the issues endpoint. Use this to include/exclude them. Can be either issue or pr"
+              },
+              {
+                "name": "milestone",
+                "type": "String",
+                "description": "If an integer is passed, it should refer to a milestone by its number field. If the string * is passed, issues with any milestone are accepted. If the string none is passed, issues without milestones are returned."
+              },
+              {
+                "name": "state",
+                "type": "String",
+                "description": "Indicates the state of the issues to return. Can be open, closed, or all."
+              },
+              {
+                "name": "assignee",
+                "type": "String",
+                "description": "Can be the name of a user. Pass in none for issues with no assigned user, and * for issues assigned to any user."
+              },
+              {
+                "name": "creator",
+                "type": "String",
+                "description": "The user that created the issue."
+              },
+              {
+                "name": "mentioned",
+                "type": "String",
+                "description": "A user that's mentioned in the issue."
+              },
+              {
+                "name": "labels",
+                "type": "String",
+                "description": "A list of comma separated label names. Example: bug,ui,@high"
+              },
+              {
+                "name": "sort",
+                "type": "String",
+                "description": "What to sort results by. Can be created, updated, comments."
+              },
+              {
+                "name": "direction",
+                "type": "String",
+                "description": "One of asc (ascending) or desc (descending)."
+              },
+              {
+                "name": "since",
+                "type": "String",
+                "description": "Only show notifications updated after the given time. This is a timestamp in ISO 8601 format: YYYY-MM-DDTHH:MM:SSZ"
+              }
+            ]
+          }
+        ],
+        "actions": [],
+        "events": []
+      },
+      {
+        "name": "IssueSearchPage",
+        "fields": [
+          {
+            "name": "total_count",
+            "type": "Int"
+          },
+          {
+            "name": "incomplete_results",
+            "type": "Boolean"
+          },
+          {
+            "name": "next",
+            "type": "Ref",
+            "ofType": "IssueSearchPage"
+          },
+          {
+            "name": "items",
+            "type": "List",
+            "ofType": "Issue"
+          }
+        ],
+        "actions": [],
+        "events": []
+      },
+      {
+        "name": "IssuePage",
+        "fields": [
+          {
+            "name": "items",
+            "type": "List",
+            "ofType": "Issue"
+          },
+          {
+            "name": "next",
+            "type": "Ref",
+            "ofType": "IssuePage"
+          }
+        ],
+        "actions": [],
+        "events": []
+      },
+      {
+        "name": "Issue",
+        "fields": [
+          {
+            "name": "active_lock_reason",
+            "type": "String"
+          },
+          {
+            "name": "assignee",
+            "type": "User"
+          },
+          {
+            "name": "assignees",
+            "type": "List",
+            "ofType": "User"
+          },
+          {
+            "name": "author_association",
+            "type": "String"
+          },
+          {
+            "name": "body",
+            "type": "String"
+          },
+          {
+            "name": "closed_at",
+            "type": "String"
+          },
+          {
+            "name": "closed_by",
+            "type": "User"
+          },
+          {
+            "name": "comments",
+            "type": "Int"
+          },
+          {
+            "name": "created_at",
+            "type": "String"
+          },
+          {
+            "name": "draft",
+            "type": "Boolean"
+          },
+          {
+            "name": "id",
+            "type": "Int"
+          },
+          {
+            "name": "labels",
+            "type": "List",
+            "ofType": "Label"
+          },
+          {
+            "name": "locked",
+            "type": "Boolean"
+          },
+          {
+            "name": "milestone",
+            "type": "String"
+          },
+          {
+            "name": "node_id",
+            "type": "String"
+          },
+          {
+            "name": "number",
+            "type": "Int",
+            "hints": {
+              "primary": true
+            }
+          },
+          {
+            "name": "pull_request",
+            "type": "PullRequest"
+          },
+          {
+            "name": "reactions",
+            "type": "Reactions"
+          },
+          {
+            "name": "state",
+            "type": "String"
+          },
+          {
+            "name": "title",
+            "type": "String",
+            "hints": {
+              "secondary": true
+            }
+          },
+          {
+            "name": "updated_at",
+            "type": "String"
+          },
+          {
+            "name": "url",
+            "type": "String"
+          },
+          {
+            "name": "user",
+            "type": "User"
+          }
+        ],
+        "actions": [
+          {
+            "name": "subscribe",
+            "params": [],
+            "type": "Void"
+          },
+          {
+            "name": "close",
+            "params": [],
+            "type": "Void"
+          },
+          {
+            "name": "createComment",
+            "params": [
+              {
+                "name": "body",
+                "type": "String"
+              }
+            ],
+            "type": "Void"
+          }
+        ],
+        "events": [
+          {
+            "name": "closed",
+            "params": [],
+            "type": "Boolean"
+          }
+        ]
+      },
+      {
+        "name": "Label",
+        "fields": [
+          {
+            "name": "name",
+            "type": "String",
+            "hints": {
+              "primary": true
+            }
+          },
+          {
+            "name": "node_id",
+            "type": "String"
+          },
+          {
+            "name": "id",
+            "type": "Int"
+          },
+          {
+            "name": "color",
+            "type": "String"
+          },
+          {
+            "name": "description",
+            "type": "String"
+          },
+          {
+            "name": "default",
+            "type": "Boolean"
+          }
+        ]
+      },
+      {
+        "name": "Reactions",
+        "fields": [
+          {
+            "name": "total_count",
+            "type": "Int"
+          },
+          {
+            "name": "plus_1",
+            "type": "Int"
+          },
+          {
+            "name": "minus_1",
+            "type": "Int"
+          },
+          {
+            "name": "laugh",
+            "type": "Int"
+          },
+          {
+            "name": "hooray",
+            "type": "Int"
+          },
+          {
+            "name": "confused",
+            "type": "Int"
+          },
+          {
+            "name": "heart",
+            "type": "Int"
+          },
+          {
+            "name": "rocket",
+            "type": "Int"
+          },
+          {
+            "name": "eyes",
+            "type": "Int"
+          }
+        ]
+      },
+      {
+        "name": "PullRequest",
+        "fields": [
+          {
+            "name": "number",
+            "type": "Int",
+            "hints": {
+              "primary": true
+            }
+          },
+          {
+            "name": "title",
+            "type": "String",
+            "hints": {
+              "primary": true
+            }
+          },
+          {
+            "name": "id",
+            "type": "Int"
+          },
+          {
+            "name": "state",
+            "type": "String"
+          },
+          {
+            "name": "body",
+            "type": "String"
+          },
+          {
+            "name": "locked",
+            "type": "Boolean"
+          },
+          {
+            "name": "merged",
+            "type": "Boolean"
+          },
+          {
+            "name": "active_lock_reason",
+            "params": [],
+            "type": "String"
+          },
+          {
+            "name": "diff",
+            "params": [],
+            "type": "String"
+          },
+          {
+            "name": "node_id",
+            "params": [],
+            "type": "String"
+          },
+          {
+            "name": "owner",
+            "params": [],
+            "type": "Ref",
+            "ofType": "User"
+          }
+        ],
+        "actions": [
+          {
+            "name": "subscribe",
+            "params": [],
+            "type": "Void"
+          },
+          {
+            "name": "close",
+            "params": [],
+            "type": "Void"
+          },
+          {
+            "name": "createComment",
+            "params": [
+              {
+                "name": "body",
+                "type": "String"
+              }
+            ],
+            "type": "Void"
+          }
+        ],
+        "events": [
+          {
+            "name": "closed",
+            "params": [],
+            "type": "Boolean"
+          }
+        ]
+      },
+      {
+        "name": "PullRequestCollection",
+        "fields": [
+          {
+            "name": "one",
+            "params": [
+              {
+                "name": "number",
+                "type": "Int"
+              }
+            ],
+            "type": "PullRequest"
+          },
+          {
+            "name": "page",
+            "params": [
+              {
+                "name": "state",
+                "type": "String"
+              },
+              {
+                "name": "head",
+                "type": "String"
+              },
+              {
+                "name": "base",
+                "type": "String"
+              },
+              {
+                "name": "sort",
+                "type": "String"
+              },
+              {
+                "name": "direction",
+                "type": "String"
+              },
+              {
+                "name": "page",
+                "type": "Int"
+              },
+              {
+                "name": "pageSize",
+                "type": "Int"
+              }
+            ],
+            "type": "PullRequestPage"
+          }
+        ],
+        "actions": [],
+        "events": []
+      },
+      {
+        "name": "PullRequestPage",
+        "fields": [
+          {
+            "name": "items",
+            "type": "List",
+            "ofType": "PullRequest"
+          },
+          {
+            "name": "next",
+            "type": "Ref",
+            "ofType": "PullRequestPage"
+          }
+        ],
+        "actions": [],
+        "events": []
+      },
+      {
+        "name": "ReleaseCollection",
+        "fields": [
+          {
+            "name": "one",
+            "params": [
+              {
+                "name": "id",
+                "type": "String"
+              }
+            ],
+            "type": "Release"
+          },
+          {
+            "name": "page",
+            "params": [
+              {
+                "name": "pageSize",
+                "type": "String"
+              },
+              {
+                "name": "page",
+                "type": "String"
+              }
+            ],
+            "type": "ReleasePage"
+          }
+        ],
+        "actions": [],
+        "events": []
+      },
+      {
+        "name": "ReleasePage",
+        "fields": [
+          {
+            "name": "items",
+            "type": "List",
+            "ofType": "Release"
+          },
+          {
+            "name": "next",
+            "type": "Ref",
+            "ofType": "ReleasePage"
+          }
+        ],
+        "actions": [],
+        "events": []
+      },
+      {
+        "name": "Release",
+        "fields": [
+          {
+            "name": "id",
+            "type": "String"
+          },
+          {
+            "name": "name",
+            "type": "String"
+          },
+          {
+            "name": "body",
+            "type": "String"
+          },
+          {
+            "name": "draft",
+            "type": "Boolean"
+          },
+          {
+            "name": "prerelease",
+            "type": "Boolean"
+          },
+          {
+            "name": "url",
+            "type": "String"
+          },
+          {
+            "name": "node_id",
+            "params": [],
+            "type": "String"
+          },
+          {
+            "name": "tag_name",
+            "params": [],
+            "type": "String"
+          },
+          {
+            "name": "target_commitish",
+            "params": [],
+            "type": "String"
+          },
+          {
+            "name": "created_at",
+            "params": [],
+            "type": "String"
+          }
+        ],
+        "actions": [],
+        "events": []
+      },
+      {
+        "name": "License",
+        "fields": [
+          {
+            "name": "name",
+            "type": "String"
+          },
+          {
+            "name": "path",
+            "type": "String"
+          },
+          {
+            "name": "sha",
+            "type": "String"
+          },
+          {
+            "name": "size",
+            "type": "Int"
+          },
+          {
+            "name": "url",
+            "type": "String"
+          },
+          {
+            "name": "type",
+            "type": "String"
+          },
+          {
+            "name": "content",
+            "type": "String"
+          },
+          {
+            "name": "encoding",
+            "type": "String"
+          },
+          {
+            "name": "license",
+            "type": "LicenseDesc"
+          },
+          {
+            "name": "html_url",
+            "params": [],
+            "type": "String"
+          },
+          {
+            "name": "git_url",
+            "params": [],
+            "type": "String"
+          },
+          {
+            "name": "download_url",
+            "params": [],
+            "type": "String"
+          }
+        ],
+        "actions": [],
+        "events": []
+      },
+      {
+        "name": "LicenseDesc",
+        "fields": [
+          {
+            "name": "key",
+            "type": "String"
+          },
+          {
+            "name": "name",
+            "type": "String"
+          },
+          {
+            "name": "url",
+            "type": "String"
+          },
+          {
+            "name": "spdx_id",
+            "params": [],
+            "type": "String"
+          }
+        ],
+        "actions": [],
+        "events": []
+      }
+    ]
+  }
+}
