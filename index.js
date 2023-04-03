@@ -5,3 +5,4 @@ function multiply(numbers) {
     .reduce((a, b) => a * b);
 }
 exports.multiply = multiply;
+
